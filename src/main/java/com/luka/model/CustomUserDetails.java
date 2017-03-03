@@ -31,16 +31,6 @@ public class CustomUserDetails extends User implements UserDetails {
         return AuthorityUtils.commaSeparatedStringToAuthorityList(roles);
     }
 
-    public List<String> getRoles(){
-        System.out.println("get first " + this.userRoles.get(0));
-        return this.userRoles;
-    }
-
-    public boolean hasRole(String role) {
-        GrantedAuthority foundAuthority = this.getAuthorities().stream().filter(authority -> authority.equals(role)).findAny().orElse(null);
-        return (foundAuthority != null);
-    }
-
     @Override
     public String getUsername() {
         return super.getEmail();

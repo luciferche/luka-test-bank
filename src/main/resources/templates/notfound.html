@@ -11,7 +11,7 @@
     </div>
     <form action="/logout" method="post">
         <input type="submit" class="button red big" value="Sign in as different user" /> <input
-            type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+            type="hidden" name="{{csrf.parameterName}}" value="{{csrf.token}}" />
     </form>
 </div>
 </body>

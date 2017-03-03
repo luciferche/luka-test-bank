@@ -33,7 +33,6 @@ public class SecurityController {
     ///login please try
     @RequestMapping(value="/login")
     public String showLogin(HttpServletRequest request, Model model){
-        System.out.println("loooogin");
         CsrfToken token = (CsrfToken) request.getAttribute("_csrf");
         Map csrfMap = new HashMap<String, String>();
         csrfMap.put("token", token.getToken());
@@ -44,7 +43,13 @@ public class SecurityController {
 
 
     @RequestMapping(value="/denied")
-    public String denied(){
+    public String denied(HttpServletRequest request, Model model){
+
+        CsrfToken token = (CsrfToken) request.getAttribute("_csrf");
+        Map csrfMap = new HashMap<String, String>();
+        csrfMap.put("token", token.getToken());
+        csrfMap.put("parameterName", token.getParameterName());
+        model.addAttribute("csrf", csrfMap);
         return "denied";
     }
 

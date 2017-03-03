@@ -28,9 +28,9 @@ public class BankApplication {
 		return (args) -> {
 			// save a couple of customers
 			User newUser  = repository.save(new User("luka.matovic", "1234"));
-			userRolesRepository.save(new UserRole(newUser.getId(), "ADMIN"));
+			userRolesRepository.save(new UserRole(newUser.getId(), "ROLE_ADMIN"));
 			newUser  = repository.save(new User("user", "1234"));
-			userRolesRepository.save(new UserRole(newUser.getId(), "USER"));
+			userRolesRepository.save(new UserRole(newUser.getId(), "ROLE_USER"));
 		};
 	}
 

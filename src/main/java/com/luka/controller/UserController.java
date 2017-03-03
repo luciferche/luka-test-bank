@@ -35,56 +35,84 @@ public class UserController {
     @Autowired
     private MoneyTransactionRepository moneyTransactionRepository;
 
+    /**
+     * [GET : /users]
+     * Show all users
+     * if user doesn't have ADMIN roles, he can't view list of all users but
+     * it's redirected to his own page
+     *
+     * @param request
+     * @param authentication
+     * @param model
+     * @return
+     */
     @GetMapping
-    String home(HttpServletRequest request, Model model){
-        List<User> users = userRepository.findAll();
-//        List<Map> userList = userRepository.findAll().stream().map(user -> {
-//            Map respMap= new HashMap<String, String>();
-//            respMap.put("email", user.getEmail());
-//            respMap.put("balance", user.getBalance());
-//            respMap.put("balance", user.getBalance());
-//            return respMap;
-//        }).collect(Collectors.toList());
+    String home(HttpServletRequest request, Authentication authentication, Model model){
 
-        model.addAttribute("csrf", getCsrfMap(request));
-//        model.addAttribute("users", userList);
+        boolean isAdmin = request.isUserInRole("ADMIN");
+        if(!isAdmin ) {
+            CustomUserDetails userDetails = (CustomUserDetails)authentication.getPrincipal();
+            return getUserView(userDetails.getId(), request, model);
+
+        }
+        List<User> users = userRepository.findAll();
+        addCsrfToModel(request, model);
         model.addAttribute("users", users);
         model.addAttribute("title", "Users list");
         return "home";
     }
 
+    /**
+     * [POST : /users]
+     * mapping method for creating users
+     *
+     * @param email
+     * @param password
+     * @param request
+     * @param authentication
+     * @param model
+     * @return
+     */
     @PostMapping
-    public String createUserView(@RequestParam String email, @RequestParam String password, HttpServletRequest request, Model model){
+    public String createUserView(@RequestParam String email, @RequestParam String password, HttpServletRequest request, Authentication authentication, Model model){
         System.out.println("usao");
         if(email == null || email.equalsIgnoreCase("") ){
             System.out.println("username not good");
             model.addAttribute("message","username not good");
-            return home(request,model);
+            return home(request, authentication, model);
         }
         if(password ==null || password.equalsIgnoreCase("")) {
             System.out.println("password not good");
             model.addAttribute("message","password not good");
-            return home(request,model);
+            return home(request, authentication, model);
         }
         try {
             User savedUser = userRepository.save(new User(email, password));
-            userRolesRepository.save(new UserRole(savedUser.getId(), "USER"));
+            userRolesRepository.save(new UserRole(savedUser.getId(), "ROLE_USER"));
             System.out.println("saved user -- " + savedUser.toString());
-            return home(request, model);
+            return home(request, authentication, model);
         } catch(DataIntegrityViolationException e) {
             System.out.println("User exists");
             model.addAttribute("message","user exists");
-            return home(request,model);
+            return home(request, authentication, model);
         }
 
     }
 
+    /**
+     * [GET - /users/{id}]
+     * @param id
+     * @param request
+     * @param model
+     * @return
+     */
     @GetMapping("/{id}")
     public String getUserView(@PathVariable("id") Long id, HttpServletRequest request, Model model){
-        User user = userRepository.findOne(id);
+        User user = userRepository.findOne(id);;
 
-        model.addAttribute("csrf", getCsrfMap(request));
-
+        boolean isAdmin = request.isUserInRole("ADMIN");
+        addCsrfToModel(request, model);
+        model.addAttribute("isAdmin", isAdmin);
         if(user == null) {
             return  "notfound";
         }
@@ -92,20 +120,39 @@ public class UserController {
         return "user";
     }
 
+    /**
+     * [post - /users/{id}/deposit]
+     *  Saves new MoneyTransaction with positive value
+     *  Adds amount to user's balance
+     *
+     * @param id
+     * @param amount
+     * @param request
+     * @param response
+     * @param model
+     * @param authentication
+     * @return
+     * @throws IOException
+     */
     @PostMapping("/{id}/deposit")
-    public String depositFundsView(@PathVariable("id") Long id, @RequestParam String amount, HttpServletRequest request, HttpServletResponse response, Model model, Authentication authentication) throws IOException {
+    public String depositFundsView(@PathVariable("id") Long id,
+                                   @RequestParam String amount,
+                                   HttpServletRequest request,
+                                   HttpServletResponse response,
+                                   Model model,
+                                   Authentication authentication) throws IOException {
         try {
-//            UserRole role = userRolesRepository.findByRole
             CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-//            List<String> rolez= userDetails.getRoles();
-            boolean b1= userDetails.hasRole("ADMIN");
-            boolean bv = request.isUserInRole("ADMIN");
-            if(!userDetails.getId().equals(id)) {
+
+            boolean isAdmin = request.isUserInRole("ADMIN");
+            if(!isAdmin && !userDetails.getId().equals(id)) {
+                addCsrfToModel(request, model);
                 return "denied";
             }
             BigDecimal bd = new BigDecimal(amount);
             User user = userRepository.findOne(id);
             if(user == null) {
+                addCsrfToModel(request, model);
                 return "notfound";
             }
             MoneyTransaction tran = moneyTransactionRepository.save(new MoneyTransaction(user, bd));
@@ -120,19 +167,35 @@ public class UserController {
         }
     }
 
+    /**
+     * [GET - /users/{id}/withdraw]
+     *
+     *  Saves new MoneyTransaction with value negated
+     *  Removes amount from user balance if there is enough money, otherwise, fail
+     *
+     * @param id
+     * @param amount
+     * @param request
+     * @param response
+     * @param model
+     * @param authentication
+     * @return
+     * @throws IOException
+     */
     @PostMapping("/{id}/withdraw")
     public String withdrawFundsView(@PathVariable("id") Long id, @RequestParam String amount, HttpServletRequest request, HttpServletResponse response, Model model,Authentication authentication) throws IOException {
         try {
 
             CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-            List<String> rolez= userDetails.getRoles();
-
-            if(!rolez.contains("ADMIN") || !userDetails.getId().equals(id)) {
+            boolean isAdmin = request.isUserInRole("ADMIN");
+            if(!isAdmin && !userDetails.getId().equals(id)) {
+                addCsrfToModel(request, model);
                 return "denied";
             }
             BigDecimal bd = new BigDecimal(amount);
             User user = userRepository.findOne(id);
             if(user == null) {
+                addCsrfToModel(request, model);
                 return "notfound";
             }
             MoneyTransaction tran = moneyTransactionRepository.save(new MoneyTransaction(user, bd.negate()));
@@ -156,13 +219,13 @@ public class UserController {
         return "return error object instead - " + e.getMessage();
     }
 
-    private Map getCsrfMap(HttpServletRequest request) {
+    private void addCsrfToModel(HttpServletRequest request, Model model) {
 
         CsrfToken token = (CsrfToken) request.getAttribute("_csrf");
         Map csrfMap = new HashMap<String, String>();
         csrfMap.put("token", token.getToken());
         csrfMap.put("parameterName", token.getParameterName());
-        return csrfMap;
+        model.addAttribute("csrf", csrfMap);
     }
 
 

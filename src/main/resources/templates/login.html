@@ -38,7 +38,6 @@
         .button_login {
             height: 30px;
             border: none;
-            background-color: #50BD63;
             border-radius: 3px;
             /* background-color: #003052; */
             line-height: 30px;
@@ -52,6 +51,19 @@
             font-size: 16px;
             font-weight: bold;
             color: #FFFFFF;
+        }
+
+        .background-classic {
+            background-color: #003052;
+        }
+        .background-go {
+            background-color: #50BD63;
+        }
+        .background-danger {
+            background-color: #de6c81;
+        }
+        .background-action {
+            background-color: coral;
         }
     </style>
 </head>
@@ -67,7 +79,7 @@
     </div>
     <input type="hidden" name="{{csrf.parameterName}}" value="{{csrf.token}}"/>
     <div class="form_row">
-        <button type="submit" class="button_login">Sign in...</button>
+        <button type="submit" class="button_login background-go">Sign in...</button>
     </div>
 
 

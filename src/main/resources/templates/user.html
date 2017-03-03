@@ -33,7 +33,6 @@
         display: inline;
         width:49%;
         height:100%;
-        line-height:100%;
     }
     .column_balance {
         float: right;
@@ -49,11 +48,10 @@
         width:150px;
         float: right;
     }
-    .button_back {
+    .button {
         border: none;
         /* background-color: coral; */
         border-radius: 3px;
-        background-color: #003052;
         line-height: 30px;
         cursor: pointer;
         width: 200px;
@@ -64,6 +62,18 @@
         font-size: 16px;
         font-weight: bold;
         color: #FFFFFF;
+    }
+    .background-classic {
+        background-color: #003052;
+    }
+    .background-go {
+        background-color: #50BD63;
+    }
+    .background-danger {
+        background-color: #de6c81;
+    }
+    .background-action {
+        background-color: coral;
     }
     .page_title {
         width:70%;
@@ -83,7 +93,6 @@
     }
     .button_transaction {
         border: none;
-        background-color: coral;
         border-radius: 3px;
         /* background-color: #003052; */
         line-height: 30px;
@@ -103,6 +112,9 @@
         border-style: none;
         padding-left: 5px;
     }
+    .main_content {
+        margin-top: 50px;
+    }
 </style>
 
 <body>
@@ -110,49 +122,58 @@
     <div class="container_header">
 
         <h2 class="page_title">User</h2>
-        <form action="/users" method="get" class="form_logout">
-            <input type="submit" class="button button_back" value="Back to users"  />
+        <div class="form_logout">
+            <form action="/users" method="get">
+                <input type="submit" class="button background-classic" value="Back to users"  />
 
-        </form>
+            </form>
+
+            {{^isAdmin}}
+            <div style="margin-top:10px">
+            <form action="/logout" method="post" >
+                <input type="submit" class="button background-danger" value="Sign out"  />
+                <input type="hidden" name="{{csrf.parameterName}}" value="{{csrf.token}}" />
+
+            </form>
+            </div>
+            {{/isAdmin}}
+        </div>
     </div>
 
+    <div class="main_content">
     <div class="subtitle header_row">
         <div class="row_column" style="float:left;">
             <form action="/users/{{user.id}}/deposit" method="post">
-                <input type="number" class="input_amount myinput" name="amount" placeholder="Amount"  />
-                <input type="submit" class="button_transaction" value="Deposit"  />
+                <input type="decimal" class="input_amount myinput" name="amount" placeholder="Amount"  />
+                <input type="submit" class="button_transaction background-action" value="Deposit"  />
                 <input type="hidden" name="{{csrf.parameterName}}" value="{{csrf.token}}" />
 
             </form>
         </div>
         <div class="row_column" style="float:right;">
             <form action="/users/{{user.id}}/withdraw" method="post">
-                <input type="number" name="amount" class="input_amount myinput" placeholder="Amount"  />
+                <input type="decimal" name="amount" class="input_amount myinput" placeholder="Amount"  />
 
-                <input type="submit" class="button_transaction" value="Withdraw"  />
+                <input type="submit" class="button_transaction background-action" value="Withdraw"  />
                 <input type="hidden" name="{{csrf.parameterName}}" value="{{csrf.token}}" />
             </form>
         </div>
     </div>
-<div class="subtitle header_row">
+    <div class="subtitle header_row">
         <div class="row_column" style="float:left;">{{user.email}}</div>
         <div class="row_column" style="float:right;">{{user.balance}}</div>
     </div>
 
     <div class="subtitle">Transactions</div>
-    <section id="transactionList" class="container_list">
-        {{#user.transactions}}
-        <div class="list_row"  onclick="window.location='/users/{{id}}';">
-            <div class="row_column column_email">{{amount}}</div>
-            <div class="row_column column_balance">{{transactionDate}}</div>
-        </div>
-        {{/user.transactions}}
-    </section>
+        <section id="transactionList" class="container_list">
+            {{#user.transactions}}
+            <div class="list_row"  onclick="window.location='/users/{{id}}';">
+                <div class="row_column column_email">{{amount}}</div>
+                <div class="row_column column_balance">{{transactionDate}}</div>
+            </div>
+            {{/user.transactions}}
+        </section>
+    </div>
 </div>
-<script>
-    function clearAmountOnEnter () {
-
-    }
-</script>
 </body>
 </html>
