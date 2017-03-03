@@ -22,13 +22,13 @@ import java.util.List;
 public class RestTest {
 
 
-        private TestRestTemplate restTemplate = new TestRestTemplate();
+//        private TestRestTemplate restTemplate = new TestRestTemplate();
 
         @Test
         public void test() {
-            ResponseEntity<ArrayList> users = this.restTemplate.getForEntity(
-                    "/users/", ArrayList.class);
-            System.out.println("users " + users.getBody().toString());
+//            ResponseEntity<ArrayList> users = this.restTemplate.getForEntity(
+//                    "/users/", ArrayList.class);
+//            System.out.println("users " + users.getBody().toString());
         }
 
 }
