@@ -26,7 +26,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Created by luciferche on 3/2/17.
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment= SpringBootTest.WebEnvironment.DEFINED_PORT)
+@SpringBootTest(webEnvironment= SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 public class RestTest {
 
@@ -50,7 +50,7 @@ public class RestTest {
             ResponseEntity<ArrayList> users = this.restTemplate.getForEntity(
                     uri, ArrayList.class);
 
-                assertThat(users.getBody().size()).isEqualTo(2);
+                assertThat(users.getBody().size()).isEqualTo(3  );
                 assertThat(users.getStatusCode()).isEqualTo(HttpStatus.OK);
                 System.out.println("users " + users.getBody().toString());
         }
@@ -171,7 +171,7 @@ public class RestTest {
         public void testGetTransaction() {
                 restTemplate = new TestRestTemplate("luka.matovic","1234");
                 String uri = "http://localhost:" + port + "/api/transactions";
-                String depositUri = "http://localhost:" + port + "/api/users/1/deposit?amount=2.88";
+                String depositUri = "http://localhost:" + port + "/api/users/3/deposit?amount=2.88";
 
                 //check for non-existing transaction first
                 ResponseEntity<MoneyTransaction> response = this.restTemplate.getForEntity(
@@ -185,7 +185,8 @@ public class RestTest {
 
                 response = this.restTemplate.getForEntity(
                         uri+"/1", MoneyTransaction.class);
-                assertThat(response.getBody().getAmount()).isEqualTo(BigDecimal.valueOf(2.88));
+                assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+                assertThat(response.getBody().getAmount()).isNotNull();
                 assertThat(response.getBody().getTransactionDate()).isNotNull();
 
 

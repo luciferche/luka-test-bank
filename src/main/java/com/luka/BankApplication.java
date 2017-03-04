@@ -30,6 +30,8 @@ public class BankApplication {
 			userRolesRepository.save(new UserRole(newUser.getId(), "ROLE_ADMIN"));
 			newUser  = repository.save(new User("user", "1234"));
 			userRolesRepository.save(new UserRole(newUser.getId(), "ROLE_USER"));
+			newUser  = repository.save(new User("test", "1234"));
+			userRolesRepository.save(new UserRole(newUser.getId(), "ROLE_USER"));
 		};
 	}
 
