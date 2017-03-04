@@ -21,7 +21,7 @@ http://localhost:8080/
 There should be a welcome page that only presents the login button.
 During app startup I am creating users with ADMIN and USER roles:
 
-email- luka.matovic 
+email- luka.matovic
 pass-1234
 ROLE_ADMIN
 
