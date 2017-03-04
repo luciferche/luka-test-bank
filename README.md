@@ -9,7 +9,7 @@ Summary -
 H2 in memory database 
 Domain objects User, UserRole, MoneyTransaction -
 Repositories for these domain objects - no implementations of interfaces just the interfaces because app is using only basic CRUD operations.
-For the same reasons no tests were written for repository interfaces, no custom code has been added to it.
+Tests for the REST conroller
 
 
 Only home ["/"] page and api calls ["/api/**"] are permitted to be called without authentication, every other uri is checked for spring security authentication.
