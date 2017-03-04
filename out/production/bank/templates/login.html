@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+    <style>
+        html, body {
+            width: 100%;
+            height: 100%;
+            margin: auto;
+            text-align: center;
+            background-color: #4eaef5;
+
+
+        }
+        .form_login{
+            width: 70%;
+            margin: auto;
+            display:block;
+        }
+        .form_row {
+            width: 250px;
+            margin: auto;
+            margin-top: 10px;
+        }
+        .button_signin {
+            margin:auto;
+            width:100px;
+        }
+
+
+        .myinput {
+            height: 30px;
+            border-radius: 3px;
+            border-style: none;
+            padding-left: 5px;
+            width:100%;
+            margin-top:10px;
+        }
+
+        .button_login {
+            height: 30px;
+            border: none;
+            border-radius: 3px;
+            /* background-color: #003052; */
+            line-height: 30px;
+            cursor: pointer;
+            width: 200px;
+            height: 30px;
+            /* font-weight: bolder; */
+            margin: auto;
+            margin-top: 10px;
+            font-family: "bodyText", sans-serif;
+            font-size: 16px;
+            font-weight: bold;
+            color: #FFFFFF;
+        }
+
+        .background-classic {
+            background-color: #003052;
+        }
+        .background-go {
+            background-color: #50BD63;
+        }
+        .background-danger {
+            background-color: #de6c81;
+        }
+        .background-action {
+            background-color: coral;
+        }
+    </style>
+</head>
+<body>
+<h1>Login</h1>
+<form action="/login" method="post" class="form_login">
+
+    <div class="form_row">
+        <input type="text" name="username" class="myinput" placeholder="email"/>
+    </div>
+    <div class="form_row">
+        <input type="password" name="password" class="myinput"  placeholder="password"/>
+    </div>
+    <input type="hidden" name="{{csrf.parameterName}}" value="{{csrf.token}}"/>
+    <div class="form_row">
+        <button type="submit" class="button_login background-go">Sign in...</button>
+    </div>
+
+
+</form>
+</body>
+</html>

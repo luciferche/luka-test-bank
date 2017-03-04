@@ -47,27 +47,4 @@ public class MyUserDetailsService implements UserDetailsService {
             }
         }
     }
-/*
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        List<User> users = userRepository.findByEmail(username);
-        if(users == null || users.size() == 0){
-            throw new UsernameNotFoundException("No user with email: "+username);
-        }else{
-            List<String> userRoles=userRolesRepository.findRolesByEmail(username);
-            if(userRoles.size()>0) {
-                return new CustomUserDetails(users.get(0),userRoles);
-            } else {
-                throw new UsernameNotFoundException("No user with email: "+username);
-//                throw new BadCredentialsException("Ne postoji takav user");
-            }
-        }
-    }*/
-//
-//    @Autowired
-//    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-//        auth
-//                .inMemoryAuthentication()
-//                .withUser("user").password("password").roles("USER");
-//    }
 }

@@ -75,7 +75,7 @@ public class ApiController {
             return new ResponseEntity<Void>(headers, HttpStatus.CREATED);
         } catch(DataIntegrityViolationException e) {
             System.out.println("User exists");
-            return  ResponseEntity.badRequest().build();
+            return  ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
         }
 
     }
@@ -104,7 +104,7 @@ public class ApiController {
                 return  ResponseEntity.notFound().build();
             }
             MoneyTransaction tran = moneyTransactionRepository.save(new MoneyTransaction(user, bd));
-            if(tran.getId() == null || tran.getId() == 1) {
+            if(tran.getId() == null) {
                 System.out.println("Transaction not saved properly");
                 return ResponseEntity.badRequest().build();
             } else {
@@ -114,7 +114,7 @@ public class ApiController {
             return ResponseEntity.created(ucb.path("/users/{id}").buildAndExpand(user.getId()).toUri()).build();
         } catch(NumberFormatException e) {
             System.out.println("invalid amount");
-            return ResponseEntity.badRequest().build();
+            return  ResponseEntity.badRequest().build();
         }
     }
 
@@ -128,10 +128,11 @@ public class ApiController {
             }
             if(user.getBalance().compareTo(bd) < 0) {
                 System.out.println("not enough funds");
-                return ResponseEntity.badRequest().build();
+                return  ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
+//                return ResponseEntity.badRequest().build();
             } else {
                 MoneyTransaction tran = moneyTransactionRepository.save(new MoneyTransaction(user, bd.negate()));
-                if(tran.getId() == null || tran.getId() == 1) {
+                if(tran.getId() == null) {
                     System.out.println("Transaction not saved properly");
                     return ResponseEntity.badRequest().build();
                 } else {
@@ -149,14 +150,26 @@ public class ApiController {
 
 
     @GetMapping("/transactions/{transactionId}")
-    public ResponseEntity<Map> getOneTransaction(@PathVariable("transactionID") String transactionId){
+    public ResponseEntity<MoneyTransaction> getOneTransaction(@PathVariable("transactionId") String transactionId){
         Format format = new SimpleDateFormat("yyyy MM dd HH:mm:ss");
 
         MoneyTransaction transaction = moneyTransactionRepository.findOne(Long.parseLong(transactionId));
+        if(transaction == null) {
+            return  ResponseEntity.notFound().build();
+        }
         HashMap<String, Object> tranMap = new HashMap<>();
         tranMap.put("amount", transaction.getAmount());
         tranMap.put("date", format.format(transaction.getTransactionDate()));
-        return ResponseEntity.ok().body(tranMap);
+        return ResponseEntity.ok().body(transaction);
     }
 
+
+//    add proper exception handling
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity handleException(Exception e) {
+        // log exception
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(e.getCause() + " ---- " + e.getMessage());
+    }
 }

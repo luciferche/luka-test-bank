@@ -3,6 +3,7 @@ package com.luka.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -17,6 +18,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
  */
 @Configuration
 @EnableWebSecurity
+@Profile("!Test")
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
@@ -29,21 +31,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .loginPage("/login")
                     .permitAll()
                     .failureUrl("/error")
-//                    .usernameParameter("username").passwordParameter("password")
                     .and()
                 .logout()
                     .logoutSuccessUrl("/")
                     .permitAll()
                     .and()
                 .authorizeRequests()
-                    .antMatchers("/api").permitAll()
-                    .antMatchers("/","/login","/api/**","/denied","/error").permitAll() //,"/home", "/showLogin","/save","/users/**","/users").permitAll()
+                    .antMatchers("/","/login","/api/**","/denied","/error").permitAll()
                     .anyRequest().authenticated()
                     .and()
                 .csrf()
-                    .ignoringAntMatchers("/api");
-//                .csrf().requireCsrfProtectionMatcher(new AntPathRequestMatcher("/users"));
-//                    .disable();
+                    .ignoringAntMatchers("/api/**");
     }
 
 

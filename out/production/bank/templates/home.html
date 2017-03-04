@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{title}}</title>
+    <script src="/js/jquery-3.1.1.min.js"></script>
+    <script>
+        window.onload=function(nesto) {
+            console.log('cao');
+            console.log(nesto);
+            console.log($);
+        }
+    </script>
+</head>
+<style>
+    html, body {
+        width: 100%;
+        height: 100%;
+        margin: auto;
+        text-align: center;
+            padding-top: 20px;
+        background-color: #4eaef5;
+
+    }
+    .container_main {
+        width: 50%;
+        margin: auto;
+    }
+    .list_row {
+        width: 100%;
+        height: 36px;
+        line-height: 36px;
+        background-color: #7cc2f5;
+        cursor: pointer;
+        margin-top:1px;
+        border-radius: 3px;
+    }
+    .btn_add_user {
+        border-radius: 3px;
+        background-color: #003052;
+        line-height: 30px;
+        cursor: pointer;
+        width: 200px;
+        height: 30px;
+        margin: auto;
+        font-family: "bodyText", sans-serif;
+        font-size: 16px;
+        font-weight: bold;
+        color: #FFFFFF;
+
+    }
+    .add_user_row{
+        width:50%;
+        height:30px;
+        margin: auto;
+        margin-top:10px;
+    }
+    .list_title {
+        width: 100%;
+        height:20px;
+        margin-bottom:
+        font-weight: bolder;
+    }
+    .container_list {
+        margin-top:20px;
+        position: relative;
+        min-height:50px;
+    }
+    .row_column {
+        display: inline;
+        width:49%;
+        height:100%;
+    }
+    .column_balance {
+        float: right;
+    }
+    .column_email {
+        float: left;
+    }
+    .container_header{
+        width:100%;
+        height:50px;
+    }
+    .form_logout {
+        width:150px;
+        float: right;
+    }
+    .button_logout {
+        border: none;
+        /* background-color: coral; */
+        border-radius: 3px;
+        background-color: #003052;
+        line-height: 30px;
+        cursor: pointer;
+        width: 200px;
+        height: 30px;
+        /* font-weight: bolder; */
+        margin: auto;
+        font-family: "bodyText", sans-serif;
+        font-size: 16px;
+        font-weight: bold;
+        color: #FFFFFF;
+
+
+    }
+    .input_add_user{
+        margin-top: 10px;
+        border-radius:3px;
+    }
+    .button_save {
+        height: 30px;
+        border: none;
+        /*background-color: #50BD63;*/
+        background-color: coral;
+        border-radius: 3px;
+        /* background-color: #003052; */
+        line-height: 30px;
+        cursor: pointer;
+        width: 200px;
+        height: 30px;
+        /* font-weight: bolder; */
+        margin: auto;
+        margin-top: 10px;
+        font-family: "bodyText", sans-serif;
+        font-size: 16px;
+        font-weight: bold;
+        color: #FFFFFF;
+    }
+    .page_title {
+        width:70%;
+        margin:auto;
+        display: inline;
+    }
+    .subtitle {
+        font-size: 18px;
+        font-weight: bolder;
+        margin-top:20px;
+        padding-bottom: 10px;
+    }
+
+    .myinput {
+        height: 30px;
+        border-radius: 3px;
+        border-style: none;
+        padding-left: 5px;
+        width:80%;
+        margin-top:10px;
+    }
+
+    .background-action {
+        background-color: coral;
+    }
+    .background-go {
+        background-color: #50BD63;
+    }
+    .background-classic {
+        background-color: #003052;
+    }
+    .background-danger {
+        background-color: #de6c81;
+    }
+</style>
+<body>
+<div class="container_main">
+    <div class="container_header">
+
+        <h2 class="page_title">Bank Home</h2>
+        <form action="/logout" method="post" class="form_logout">
+            <input type="submit" class="button_logout background-danger" value="Sign out"  />
+            <input type="hidden" name="{{csrf.parameterName}}" value="{{csrf.token}}" />
+
+        </form>
+    </div>
+
+    <div class="subtitle">{{title}}</div>
+<div>
+    <div class="btn_add_user" onclick="javascript:showAddBlock();">
+        Add user
+    </div>
+    <div id="addBlock" style="display: none; margin-top: 10px;">
+
+        <form action="/users" method="post" >
+            <div class="add_user_row" >
+                <input type="text" name="email" placeholder="email" class="input_add_user myinput"/>
+
+            </div>
+            <div class="add_user_row" >
+                <input type="text" name="password" placeholder="password" class="myinput"/>
+            </div>
+            <div class="add_user_row" >
+                <input type="submit" class="button button_save background-action" value="Save user"  />
+                <input type="hidden" name="{{csrf.parameterName}}" value="{{csrf.token}}" />
+            </div>
+        </form>
+    </div>
+</div>
+    <section id="userList" class="container_list">
+        {{#users}}
+        <div class="list_row"  onclick="window.location='/users/{{id}}';">
+            <div class="row_column column_email">{{email}}</div>
+            <div class="row_column column_balance">{{balance}}</div>
+        </div>
+        {{/users}}
+    </section>
+</div>
+<script>
+    function showAddBlock(){
+        var addUserContainer = document.getElementById("addBlock");
+        if(addUserContainer.style.display === 'none') {
+            addUserContainer.style.display = 'block';
+        } else {
+            addUserContainer.style.display = 'none';
+
+        }
+    }
+</script>
+</body>
+</html>

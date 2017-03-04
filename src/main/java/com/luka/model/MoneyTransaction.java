@@ -33,9 +33,6 @@ public class MoneyTransaction implements Serializable {
 
         return transactionDate;
     }
-    //    @Column(name = "user_id")
-//    private long userId;
-
 
     @JsonIgnore
     @ManyToOne(fetch=FetchType.LAZY)
@@ -51,12 +48,6 @@ public class MoneyTransaction implements Serializable {
         this.transactionDate = new Date();
         this.amount = amount;
     }
-//    public MoneyTransaction(MoneyTransaction moneyTransaction) {
-//        this.id = moneyTransaction.id;
-//        this.user = moneyTransaction.getUser();
-//        this.transactionDate = new Date();
-//        this.amount = moneyTransaction.amount;
-//    }
 
     public Long getId() {
         return id;
@@ -66,13 +57,6 @@ public class MoneyTransaction implements Serializable {
         this.id = id;
     }
 
-//    public long getUserId() {
-//        return userId;
-//    }
-//
-//    public void setUserId(long userId) {
-//        this.userId = userId;
-//    }
 
     public User getUser() {
         return user;
