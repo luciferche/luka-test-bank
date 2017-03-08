@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.security.Principal;
 import java.text.Format;
@@ -118,6 +119,7 @@ public class ApiController {
         }
     }
 
+    @Transactional
     @PostMapping("/users/{id}/withdraw")
     public ResponseEntity<MoneyTransaction> withdrawFunds(@PathVariable("id") Long id, @RequestParam String amount, UriComponentsBuilder ucb) {
         try {
@@ -164,7 +166,6 @@ public class ApiController {
     }
 
 
-//    add proper exception handling
     @ExceptionHandler(Exception.class)
     public ResponseEntity handleException(Exception e) {
         // log exception

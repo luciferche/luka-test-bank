@@ -4,6 +4,7 @@ import com.luka.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Controller;
@@ -198,12 +199,18 @@ public class UserController {
                 addCsrfToModel(request, model);
                 return "notfound";
             }
-            MoneyTransaction tran = moneyTransactionRepository.save(new MoneyTransaction(user, bd.negate()));
+            if(user.getBalance().compareTo(bd) < 0) {
+                System.out.println("not enough funds");
+                model.addAttribute("message", "Not enough funds");
+                return getUserView(user.getId(), request, model);
+//                return ResponseEntity.badRequest().build();
+            } else {
+                MoneyTransaction tran = moneyTransactionRepository.save(new MoneyTransaction(user, bd.negate()));
 
-            user.setBalance(user.getBalance().subtract(bd));
-            userRepository.save(user);
-            return getUserView(user.getId(),request, model);
-
+                user.setBalance(user.getBalance().subtract(bd));
+                userRepository.save(user);
+                return getUserView(user.getId(), request, model);
+            }
         } catch(NumberFormatException e) {
             System.out.println("invalid amount");
             model.addAttribute("message", "invalid amount");

@@ -115,6 +115,15 @@
     .main_content {
         margin-top: 50px;
     }
+    h4 {
+        color: red;
+    }
+
+    .message_block {
+        height:30px;
+        width:100%;
+        text-align: center;
+    }
 </style>
 
 <body>
@@ -130,21 +139,27 @@
 
             {{^isAdmin}}
             <div style="margin-top:10px">
-            <form action="/logout" method="post" >
-                <input type="submit" class="button background-danger" value="Sign out"  />
-                <input type="hidden" name="{{csrf.parameterName}}" value="{{csrf.token}}" />
+                <form action="/logout" method="post" >
+                    <input type="submit" class="button background-danger" value="Sign out"  />
+                    <input type="hidden" name="{{csrf.parameterName}}" value="{{csrf.token}}" />
 
-            </form>
+                </form>
             </div>
             {{/isAdmin}}
         </div>
+        {{#message}}
+        <div class="message_block">
+            <h4>{{message}}</h4>
+        </div>
+        {{/message}}
+
     </div>
 
     <div class="main_content">
     <div class="subtitle header_row">
         <div class="row_column" style="float:left;">
             <form action="/users/{{user.id}}/deposit" method="post">
-                <input type="decimal" class="input_amount myinput" name="amount" placeholder="Amount"  />
+                <input type="number" class="input_amount myinput" name="amount" type='numeric' placeholder="Amount"  />
                 <input type="submit" class="button_transaction background-action" value="Deposit"  />
                 <input type="hidden" name="{{csrf.parameterName}}" value="{{csrf.token}}" />
 
@@ -152,7 +167,7 @@
         </div>
         <div class="row_column" style="float:right;">
             <form action="/users/{{user.id}}/withdraw" method="post">
-                <input type="decimal" name="amount" class="input_amount myinput" placeholder="Amount"  />
+                <input type="number" name="amount" class="input_amount myinput" placeholder="Amount"  />
 
                 <input type="submit" class="button_transaction background-action" value="Withdraw"  />
                 <input type="hidden" name="{{csrf.parameterName}}" value="{{csrf.token}}" />
